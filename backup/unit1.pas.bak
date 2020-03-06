@@ -1,0 +1,472 @@
+unit Unit1;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  Classes, SysUtils, FileUtil, LR_Class, LR_DSet, Forms, Controls, Graphics,
+  Dialogs, StdCtrls, ExtCtrls, Spin,inifiles;
+
+type
+
+  { TForm1 }
+
+  TForm1 = class(TForm)
+    Button2: TButton;
+    Button3: TButton;
+    cell: TLabeledEdit;
+    CheckBox1: TCheckBox;
+    CheckBox2: TCheckBox;
+    chienrpc: TComboBox;
+    chienrace: TComboBox;
+    chienpathologie: TComboBox;
+    chienphysiologie: TComboBox;
+    chienactivite: TComboBox;
+    chatrace: TComboBox;
+    chatpathologie: TComboBox;
+    chatphysiologie: TComboBox;
+    chatactivite: TComboBox;
+    Label3: TLabel;
+    matieresgrasses: TComboBox;
+    viande: TComboBox;
+    legumes: TComboBox;
+    feculents: TComboBox;
+    dash: TLabeledEdit;
+    Edit1: TEdit;
+    Edit2: TEdit;
+    FloatSpinEdit1: TFloatSpinEdit;
+    frReport1: TfrReport;
+    hum: TLabeledEdit;
+    Image1: TImage;
+    Label1: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
+    Label14: TLabel;
+    Label15: TLabel;
+    Label16: TLabel;
+    Label17: TLabel;
+    Label18: TLabel;
+    Label2: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    LabeledEdit1: TLabeledEdit;
+    LabeledEdit2: TLabeledEdit;
+    LabeledEdit6: TLabeledEdit;
+    LabeledEdit7: TLabeledEdit;
+    matg: TLabeledEdit;
+    Memo1: TMemo;
+    panelchat1: TPanel;
+    panelchat2: TPanel;
+    panelchat3: TPanel;
+    panel_aliment: TPanel;
+    panel_aliment_2: TPanel;
+    panel_chien: TPanel;
+    panel_chat: TPanel;
+    prot: TLabeledEdit;
+    inscriptions: TRadioButton;
+    fabricant: TRadioButton;
+    radiochien: TRadioButton;
+    radiochat: TRadioButton;
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure chatphysiologieClick(Sender: TObject);
+    procedure CheckBox1Change(Sender: TObject);
+    procedure chienphysiologieChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure frReport1GetValue(const ParName: String; var ParValue: Variant);
+    procedure frUserDataset1First(Sender: TObject);
+    procedure GroupBox1Click(Sender: TObject);
+    procedure protChange(Sender: TObject);
+    procedure radiochienChange(Sender: TObject);
+    procedure RadioGroup1ChangeBounds(Sender: TObject);
+    procedure RadioGroup1Click(Sender: TObject);
+  private
+    { private declarations }
+  public
+    { public declarations }
+  end;
+
+var
+  Form1: TForm1;
+  k1,k2,k3,k4,ena,de,me,poids,proteines,cellulose,mg,cendres,humidite,ge,edigest:double;
+  st:array [1..255] of string;
+var rpc,pclegume,pcmg,pcfeculent,pcviande:double;
+var qviande,qlegume,qmg,qfeculent:double;
+var eviande,elegume,emg,efeculent:double;
+var pds:double;
+var be:double;
+var s1,s2,s3,s4:tstringlist;
+var v1,v2,v3,v4:tstringlist;
+  const val_clinique='Clinique Vétérinaire Tenvooren'+#13+'6, Avenue Maréchal Juin'+#13+'Tél : 04 77 75 03 91';
+implementation
+
+{$R *.lfm}
+
+{ TForm1 }
+
+procedure getinisections(ini:string);
+var inif:tinifile;
+var i:integer;
+begin
+inif:=tinifile.Create(ini);
+s1:=tstringlist.Create;v1:=tstringlist.create;
+s1.Clear;v1.clear;
+inif.ReadSectionValues('viande',v1);
+inif.readsection('viande',s1);
+form1.viande.items.Clear;
+form1.viande.items:=s1;
+
+s2:=tstringlist.Create;v2:=tstringlist.create;
+s2.Clear;v2.clear;
+inif.ReadSectionValues('legumes',v2);
+inif.readsection('legumes',s2);
+form1.legumes.items.Clear;
+form1.legumes.items:=s2;
+
+s3:=tstringlist.Create;v3:=tstringlist.create;
+s3.Clear;v3.clear;
+inif.ReadSectionValues('matieresgrasses',v3);
+inif.readsection('matieresgrasses',s3);
+form1.matieresgrasses.items.Clear;
+form1.matieresgrasses.items:=s3;
+
+s4:=tstringlist.Create;v4:=tstringlist.create;
+s4.Clear;v4.clear;
+inif.ReadSectionValues('feculents',v4);
+inif.readsection('feculents',s4);
+form1.feculents.items.Clear;
+form1.feculents.items:=s4;
+
+
+inif.free;
+
+end;
+
+procedure clearst(var arst:array of string);
+var i:integer;
+  begin
+  for i:=1 to length(arst)-1 do arst[i]:='';
+  end;
+
+function cvpv(texte:string):string;
+var i:integer;
+begin
+for i:=1 to length(texte)-1 do if texte[i]='.' then texte[i]:=',';
+result:=texte;
+end;
+
+function getbe(poids:real):real;
+var be:real;
+begin
+with form1 do begin
+  //Calcul ration chat
+  clearst(st);
+  st[7]:=formatfloat('0.0',poids);
+   if radiochat.checked then begin
+   st[1]:='chat';
+   case chatrace.ItemIndex of
+   0:k1:=1.5;
+   1:k1:=1;
+   end;
+   case chatactivite.ItemIndex of
+   0:k2:=0.8;
+   1:k2:=0.9;
+   2:k2:=1;
+   end;
+   case chatpathologie.ItemIndex of
+   0:k3:=0.8;
+   1:k3:=0.6;
+   2:k3:=1.5;
+   3:k3:=1;
+   end;
+   case chatphysiologie.ItemIndex of
+   0:k4:=70;
+   1:k4:=60;
+   2:k4:=100;
+   3:k4:=200;
+   4:k4:=250;
+   5:k4:=130;
+   6:k4:=100;
+   7:k4:=80;
+   8:k4:=200;
+   9:k4:=105;
+   10:k4:=80;
+   11:k4:=65;
+   end;
+   st[8]:='Race (k1): '+chatrace.Text+#13+'Activité (k2): '+chatactivite.text+#13+'Pathologies (k3): '+chatpathologie.text+#13+'Physiologie (k4): '+chatphysiologie.text;
+   be:=k1*k2*k3*k4*poids;
+   st[6]:='Méthode de calcul du BE : P x K';
+  end else begin
+  // calcul de ration pour chien
+  st[1]:='chien';
+  case chienrace.ItemIndex of
+   0:k1:=0.8;
+   1:k1:=0.9;
+   2:k1:=1.1;
+   3:k1:=1;
+   end;
+   case chienactivite.ItemIndex of
+   0:k2:=0.8;
+   1:k2:=1;
+   2:k2:=1.2;
+   end;
+   case chienpathologie.ItemIndex of
+   0:k3:=1;
+   1:k3:=0.8;
+   2:k3:=0.6;
+   3:k3:=0.8;
+   4:k3:=1.2;
+   end;
+   case chienphysiologie.ItemIndex of
+   0:k4:=1;
+   1:k4:=0.8;
+   2:k4:=1.3;
+   3:k4:=2.5;
+   4:k4:=2;
+   5:k4:=1.7;
+   6:k4:=1.2;
+   end;
+   st[8]:='Race (k1): '+chienrace.Text+#13+'Activité (k2): '+chienactivite.text+#13+'Pathologies (k3): '+chienpathologie.text+#13+'Physiologie (k4): '+chienphysiologie.text;
+   if poids<=10 then begin
+   st[6]:='Méthode de calcul du BE : 130xP^(0,75)xK';
+   be:=k1*k2*k3*k4*130*exp(0.75*ln(poids));end;
+   if poids>10 then  begin
+   st[6]:='Méthode de calcul du BE : 156xP^(0,67)xK';
+   be:=k1*k2*k3*k4*156*exp(0.67*ln(poids));
+   end;
+   end;
+  st[1]:='Pour le '+st[1]+' '+form1.labelededit2.Text+' de Mr ou Mme '+form1.labelededit1.text;
+  st[2]:=formatfloat('0.0',k1);
+  st[3]:=formatfloat('0.0',k2);
+  st[4]:=formatfloat('0.0',k3);
+  st[5]:=formatfloat('0.0',k4);
+
+  st[10]:='Besoin énergétique calculé : '+formatfloat('0.0',be)+' kcal/jour';
+  result:=be;
+
+
+end;
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+frreport1.LoadFromFile('ration.lrf');
+frreport1.ShowReport;
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+begin
+pds:=floatspinedit1.Value;
+if pds=0 then begin;showmessage('Poids nul ! impossible de continuer');exit;end;
+be:=getbe(pds);
+memo1.lines.clear;
+edit1.Text:=formatfloat('0.00',be);
+
+if checkbox1.Checked then begin;
+   eviande:=strtofloat(cvpv(copy(v1[viande.itemindex],length(s1[viande.itemindex])+2,length(v1[viande.itemindex])-(length(s1[viande.itemindex])+1))));
+   elegume:=strtofloat(cvpv(copy(v2[legumes.itemindex],length(s2[legumes.itemindex])+2,length(v2[legumes.itemindex])-(length(s2[legumes.itemindex])+1))));
+   emg:=strtofloat(cvpv(copy(v3[matieresgrasses.itemindex],length(s3[matieresgrasses.itemindex])+2,length(v3[matieresgrasses.itemindex])-(length(s3[matieresgrasses.itemindex])+1))));
+   efeculent:=strtofloat(cvpv(copy(v4[feculents.itemindex],length(s4[feculents.itemindex])+2,length(v4[feculents.itemindex])-(length(s4[feculents.itemindex])+1))));
+
+{   case legumes.ItemIndex of
+   0:elegume:=0.25;
+   end;
+   case matieresgrasses.ItemIndex of
+   0:emg:=9;
+   end;
+   case feculents.ItemIndex of
+   0:efeculent:=1.15;
+   end;     }
+pcviande:=20;
+if radiochien.checked then begin
+      if pds<15 then begin
+      pclegume:=7;
+      pcmg:=7;
+      end else
+      begin
+      pclegume:=5;
+      pcmg:=5;
+      end;
+
+      case chienrpc.ItemIndex of
+      0:rpc:=55;
+      1:rpc:=60;
+      2:rpc:=65;
+      3:rpc:=70;
+      4:rpc:=75;
+      5:rpc:=80;
+      6:rpc:=65;
+      7:rpc:=75;
+      8:rpc:=70;
+      9:rpc:=60;
+      10:rpc:=40;
+      11:rpc:=90;
+      12:rpc:=80;
+      13:rpc:=60;
+      14:rpc:=40;
+      15:rpc:=60;
+      end;
+
+   end;
+     if radiochat.checked then begin
+      rpc:=75;
+      pclegume:=6;
+      pcmg:=15;
+      end;
+
+   qviande:=rpc*be/1000*0.8/(pcviande/100);
+   qlegume:=be*(pclegume/100)/elegume;
+   qmg:=be*pcmg/100/emg;
+   qfeculent:=(be-qviande*eviande-qlegume*elegume-qmg*emg)/efeculent;
+   memo1.lines.add(formatfloat('0',qviande)+ 'g de viande');
+   memo1.lines.add(formatfloat('0',qmg)+ 'g de matière grasses');
+   memo1.lines.add(formatfloat('0',qlegume)+ 'g de légumes');
+   memo1.lines.add(formatfloat('0',qfeculent)+ 'g de féculents');
+
+
+   end else begin
+
+
+  if (labelededit6.text<>'') and (fabricant.checked) then begin me:=strtofloat(cvpv(labelededit6.text));
+  st[11]:='Données fournies par le fabricant : '+formatfloat('0.00',me)+'kcal/100g';end;
+  if ((inscriptions.Checked) and not ((prot.text='') or (dash.text='') or (matg.text='') or (cell.text='') or (hum.text=''))) then begin
+  proteines:=strtofloat(cvpv(prot.text));
+  mg:=strtofloat(cvpv(matg.text));
+  cellulose:=strtofloat(cvpv(cell.text));
+  cendres:=strtofloat(cvpv(dash.text));
+  humidite:=strtofloat(cvpv(hum.text));
+  ena:=100-(humidite+proteines+cellulose+mg+cendres);
+    st[11]:='Données calculées :'+#13+
+   'Protéines : '+prot.text+' %'+#13+
+   'Matières grasses : '+matg.text+' %'+#13+
+   'Cendres : '+dash.text+' %'+#13+
+   'Cellulose : '+cell.text+' %'+#13+
+   'ENA(calculé) : '+formatfloat('0.00',ena)+' %';
+  if checkbox2.checked then
+  //Atwater 3.5-3.5-8.5
+  begin
+  me:=proteines*0.035+mg*0.085+ena*0.035;
+  st[11]:=st[11]+#13+'Le calcul de la densité energétique a été calculé selon la méthode Atwater'+#13;   //NRC 2006
+  end
+  else begin;
+  st[11]:=st[11]+#13+'Le calcul de la densité energétique a été calculé selon la méthode NRC 2006'+#13;
+  ge:=5.7*proteines/100+9.4*mg/100+4.1*(ena+cellulose)/100;
+  if radiochien.checked then edigest:=91.2-(1.43*(100*cellulose)/(100-humidite));
+  if radiochat.checked then edigest:=87.9-(0.88*(100*cellulose)/(100-humidite));
+  de:=ge*edigest/100;
+  if radiochien.checked then me:=de-(1.04*proteines/100);
+  if radiochat.checked then me:=de-(0.77*proteines/100);
+  end;
+  st[11]:=st[11]+'Densité energétique calculée : '+formatfloat('0.00',me)+' kcal/100g';
+  labelededit7.Text:=formatfloat('0.00',ena);
+  labelededit6.Text:=formatfloat('0.00',me);
+
+  end else if inscriptions.checked then begin
+  showmessage('Impossible de calculer la densité énérgétique avec les éléments fournis');
+  exit;
+  end;
+  if me=0 then exit;
+  edit2.text:=formatfloat('0.0',(getbe(floatspinedit1.value))/me);
+  st[9]:=edit2.text+' g d''aliment';
+end;
+end;
+
+procedure TForm1.chatphysiologieClick(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.CheckBox1Change(Sender: TObject);
+begin
+  if checkbox1.Checked then begin;
+  panel_aliment_2.Visible:=true;
+  panel_aliment.Visible:=false;
+  chienrpc.enabled:=true;
+  end else begin
+  panel_aliment_2.Visible:=false;
+  panel_aliment.Visible:=true;
+  chienrpc.enabled:=false;
+ end;
+  end;
+
+procedure TForm1.chienphysiologieChange(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+var fichier:string;
+begin
+fichier:=extractfilepath(paramstr(0))+'\energie.ini';
+if not fileexists(fichier) then begin; showmessage('Fichier de configuration absent !');exit;end;
+getinisections(fichier);
+end;
+
+procedure TForm1.frReport1GetValue(const ParName: String; var ParValue: Variant
+  );
+begin
+  if ParName = 'st1' then ParValue := st[1];
+  if ParName = 'st2' then ParValue := st[2];
+  if ParName = 'st3' then ParValue := st[3];
+  if ParName = 'st4' then ParValue := st[4];
+  if ParName = 'st5' then ParValue := st[5];
+  if ParName = 'st6' then ParValue := st[6];
+  if ParName = 'st7' then ParValue := st[7];
+  if ParName = 'st8' then ParValue := st[8];
+  if ParName = 'st9' then ParValue := st[9];
+  if ParName = 'st10' then ParValue := st[10];
+  if ParName = 'st11' then ParValue := st[11];
+  if ParName = 'st12' then ParValue := val_clinique;
+end;
+
+procedure TForm1.frUserDataset1First(Sender: TObject);
+begin
+end;
+
+procedure TForm1.GroupBox1Click(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.protChange(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.radiochienChange(Sender: TObject);
+begin
+      if radiochien.checked then begin ;
+  panel_chien.visible:=true;
+  panel_chat.visible:=false;
+  end;
+  if radiochat.checked then begin ;
+  panel_chien.visible:=false;
+  panel_chat.visible:=true;
+  end;
+end;
+
+procedure TForm1.RadioGroup1ChangeBounds(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.RadioGroup1Click(Sender: TObject);
+begin
+
+end;
+
+end.
+

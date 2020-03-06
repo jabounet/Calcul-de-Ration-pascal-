@@ -1,0 +1,814 @@
+object Form1: TForm1
+  Left = 282
+  Height = 601
+  Top = 72
+  Width = 667
+  Caption = 'Calcul de ration'
+  ClientHeight = 601
+  ClientWidth = 667
+  Color = clWhite
+  OnCreate = FormCreate
+  LCLVersion = '1.2.2.0'
+  object panel_aliment_2: TPanel
+    Left = 233
+    Height = 288
+    Top = 176
+    Width = 424
+    BevelOuter = bvNone
+    ClientHeight = 288
+    ClientWidth = 424
+    ParentColor = False
+    TabOrder = 6
+    object Label18: TLabel
+      Left = 0
+      Height = 32
+      Top = 0
+      Width = 424
+      Align = alTop
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Alimentation ménagère'
+      Font.Height = -20
+      Font.Style = [fsBold]
+      Layout = tlCenter
+      ParentColor = False
+      ParentFont = False
+    end
+    object viande: TComboBox
+      Left = 15
+      Height = 23
+      Top = 44
+      Width = 191
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'Viande'
+      )
+      TabOrder = 0
+      Text = 'Viande'
+    end
+    object legumes: TComboBox
+      Left = 15
+      Height = 23
+      Top = 84
+      Width = 191
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'Légumes'
+      )
+      TabOrder = 1
+      Text = 'Légumes'
+    end
+    object feculents: TComboBox
+      Left = 215
+      Height = 23
+      Top = 44
+      Width = 191
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'Féculents'
+      )
+      TabOrder = 2
+      Text = 'Féculents'
+    end
+    object Memo1: TMemo
+      Left = 15
+      Height = 151
+      Top = 120
+      Width = 391
+      ScrollBars = ssAutoVertical
+      TabOrder = 3
+    end
+    object matieresgrasses: TComboBox
+      Left = 215
+      Height = 23
+      Top = 84
+      Width = 191
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'Huile'
+      )
+      TabOrder = 4
+      Text = 'Huile'
+    end
+  end
+  object panel_aliment: TPanel
+    Left = 232
+    Height = 288
+    Top = 176
+    Width = 424
+    BevelOuter = bvNone
+    ClientHeight = 288
+    ClientWidth = 424
+    ParentColor = False
+    TabOrder = 5
+    object Label17: TLabel
+      Left = 0
+      Height = 32
+      Top = 0
+      Width = 424
+      Align = alTop
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Aliment industriel'
+      Font.Height = -20
+      Font.Style = [fsBold]
+      Layout = tlCenter
+      ParentColor = False
+      ParentFont = False
+    end
+    object prot: TLabeledEdit
+      Left = 80
+      Height = 23
+      Top = 75
+      Width = 112
+      EditLabel.AnchorSideLeft.Control = prot
+      EditLabel.AnchorSideRight.Control = prot
+      EditLabel.AnchorSideRight.Side = asrBottom
+      EditLabel.AnchorSideBottom.Control = prot
+      EditLabel.Left = 80
+      EditLabel.Height = 15
+      EditLabel.Top = 57
+      EditLabel.Width = 112
+      EditLabel.Caption = 'Protéines (%)'
+      EditLabel.ParentColor = False
+      TabOrder = 0
+      OnChange = protChange
+    end
+    object matg: TLabeledEdit
+      Left = 80
+      Height = 23
+      Top = 123
+      Width = 112
+      EditLabel.AnchorSideLeft.Control = matg
+      EditLabel.AnchorSideRight.Control = matg
+      EditLabel.AnchorSideRight.Side = asrBottom
+      EditLabel.AnchorSideBottom.Control = matg
+      EditLabel.Left = 80
+      EditLabel.Height = 15
+      EditLabel.Top = 105
+      EditLabel.Width = 112
+      EditLabel.Caption = 'Matières grasses (%)'
+      EditLabel.ParentColor = False
+      TabOrder = 1
+    end
+    object hum: TLabeledEdit
+      Left = 80
+      Height = 23
+      Top = 171
+      Width = 112
+      EditLabel.AnchorSideLeft.Control = hum
+      EditLabel.AnchorSideRight.Control = hum
+      EditLabel.AnchorSideRight.Side = asrBottom
+      EditLabel.AnchorSideBottom.Control = hum
+      EditLabel.Left = 80
+      EditLabel.Height = 15
+      EditLabel.Top = 153
+      EditLabel.Width = 112
+      EditLabel.Caption = 'Humidité (%)'
+      EditLabel.ParentColor = False
+      TabOrder = 2
+    end
+    object dash: TLabeledEdit
+      Left = 230
+      Height = 23
+      Top = 123
+      Width = 112
+      EditLabel.AnchorSideLeft.Control = dash
+      EditLabel.AnchorSideRight.Control = dash
+      EditLabel.AnchorSideRight.Side = asrBottom
+      EditLabel.AnchorSideBottom.Control = dash
+      EditLabel.Left = 230
+      EditLabel.Height = 15
+      EditLabel.Top = 105
+      EditLabel.Width = 112
+      EditLabel.Caption = 'Cendres (%)'
+      EditLabel.ParentColor = False
+      TabOrder = 4
+    end
+    object cell: TLabeledEdit
+      Left = 232
+      Height = 23
+      Top = 75
+      Width = 112
+      EditLabel.AnchorSideLeft.Control = cell
+      EditLabel.AnchorSideRight.Control = cell
+      EditLabel.AnchorSideRight.Side = asrBottom
+      EditLabel.AnchorSideBottom.Control = cell
+      EditLabel.Left = 232
+      EditLabel.Height = 15
+      EditLabel.Top = 57
+      EditLabel.Width = 112
+      EditLabel.Caption = 'Cellulose'
+      EditLabel.ParentColor = False
+      TabOrder = 3
+    end
+    object LabeledEdit7: TLabeledEdit
+      Left = 232
+      Height = 23
+      Top = 171
+      Width = 112
+      EditLabel.AnchorSideLeft.Control = LabeledEdit7
+      EditLabel.AnchorSideRight.Control = LabeledEdit7
+      EditLabel.AnchorSideRight.Side = asrBottom
+      EditLabel.AnchorSideBottom.Control = LabeledEdit7
+      EditLabel.Left = 232
+      EditLabel.Height = 15
+      EditLabel.Top = 153
+      EditLabel.Width = 112
+      EditLabel.Caption = 'ENA (ne pas remplir)'
+      EditLabel.ParentColor = False
+      ReadOnly = True
+      TabOrder = 6
+      TabStop = False
+    end
+    object LabeledEdit6: TLabeledEdit
+      Left = 80
+      Height = 23
+      Top = 248
+      Width = 104
+      EditLabel.AnchorSideLeft.Control = LabeledEdit6
+      EditLabel.AnchorSideRight.Control = LabeledEdit6
+      EditLabel.AnchorSideRight.Side = asrBottom
+      EditLabel.AnchorSideBottom.Control = LabeledEdit6
+      EditLabel.Left = 80
+      EditLabel.Height = 15
+      EditLabel.Top = 230
+      EditLabel.Width = 104
+      EditLabel.Caption = 'Densité (en kcal/g)'
+      EditLabel.ParentColor = False
+      TabOrder = 5
+    end
+    object inscriptions: TRadioButton
+      Left = 8
+      Height = 19
+      Top = 32
+      Width = 227
+      Caption = 'Inscriptions sur le paquet de croquettes'
+      Checked = True
+      TabOrder = 7
+      TabStop = True
+    end
+    object fabricant: TRadioButton
+      Left = 8
+      Height = 19
+      Top = 208
+      Width = 248
+      Caption = 'Densité energétique fournie par le fabricant'
+      TabOrder = 8
+    end
+  end
+  object panel_chat: TPanel
+    Left = 32
+    Height = 280
+    Top = 176
+    Width = 192
+    BevelOuter = bvNone
+    ClientHeight = 280
+    ClientWidth = 192
+    ParentColor = False
+    TabOrder = 3
+    object chatrace: TComboBox
+      Left = 16
+      Height = 23
+      Top = 72
+      Width = 154
+      AutoSelect = False
+      ItemHeight = 15
+      ItemIndex = 1
+      Items.Strings = (
+        'Sphinx'
+        'Autres'
+      )
+      TabOrder = 0
+      Text = 'Autres'
+    end
+    object chatpathologie: TComboBox
+      Left = 16
+      Height = 23
+      Top = 120
+      Width = 154
+      AutoSelect = False
+      ItemHeight = 15
+      ItemIndex = 3
+      Items.Strings = (
+        'Surpoids / obésité'
+        'Resistance à l''amaigrissement'
+        'Cancer, état catabolique'
+        'Aucune pathologie'
+      )
+      TabOrder = 1
+      Text = 'Aucune pathologie'
+    end
+    object Label12: TLabel
+      Left = 0
+      Height = 32
+      Top = 0
+      Width = 192
+      Align = alTop
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Chat'
+      Font.Height = -20
+      Font.Style = [fsBold]
+      Layout = tlCenter
+      ParentColor = False
+      ParentFont = False
+    end
+    object Label13: TLabel
+      Left = 16
+      Height = 15
+      Top = 53
+      Width = 31
+      Caption = 'Race :'
+      ParentColor = False
+    end
+    object Label14: TLabel
+      Left = 16
+      Height = 15
+      Top = 104
+      Width = 63
+      Caption = 'Pathologie :'
+      ParentColor = False
+    end
+    object chatphysiologie: TComboBox
+      Left = 16
+      Height = 23
+      Top = 168
+      Width = 154
+      AutoSelect = False
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'Adulte entier'
+        'Adulte castré'
+        'Chatte : Gestation'
+        'Chatte : Lactation'
+        'Chaton entier <10 semaines'
+        'Chaton entier 10 à 20 semaines'
+        'Chaton entier 20 à 30 semaines'
+        'Chaton entier 30 à 40 semaines'
+        'Chaton castré <10 semaines'
+        'Chaton castré 10 à 20 semaines'
+        'Chaton castré 20 à 30 semaines'
+        'Chaton castré 30 à 40 semaines'
+      )
+      OnChange = chienphysiologieChange
+      TabOrder = 2
+      Text = 'Adulte entier'
+    end
+    object chatactivite: TComboBox
+      Left = 16
+      Height = 23
+      Top = 216
+      Width = 154
+      AutoSelect = False
+      ItemHeight = 15
+      Items.Strings = (
+        'Sédentaire (intérieur)'
+        'Extérieur + Intérieur'
+        'Actif (exterieur)'
+      )
+      OnChange = chienphysiologieChange
+      TabOrder = 3
+      Text = 'Normal (jardin)'
+    end
+    object Label15: TLabel
+      Left = 16
+      Height = 15
+      Top = 152
+      Width = 67
+      Caption = 'Physiologie :'
+      ParentColor = False
+    end
+    object Label16: TLabel
+      Left = 16
+      Height = 15
+      Top = 200
+      Width = 46
+      Caption = 'Activité :'
+      ParentColor = False
+    end
+  end
+  object panel_chien: TPanel
+    Left = 32
+    Height = 288
+    Top = 176
+    Width = 192
+    BevelOuter = bvNone
+    ClientHeight = 288
+    ClientWidth = 192
+    ParentColor = False
+    TabOrder = 2
+    object chienrace: TComboBox
+      Left = 16
+      Height = 23
+      Top = 59
+      Width = 154
+      AutoSelect = False
+      ItemHeight = 15
+      ItemIndex = 3
+      Items.Strings = (
+        'Nordiques / Retriever'
+        'Cocker / Beagle'
+        'Lévrier / Dogue Allemand'
+        'Autres'
+      )
+      TabOrder = 0
+      Text = 'Autres'
+    end
+    object chienpathologie: TComboBox
+      Left = 16
+      Height = 23
+      Top = 107
+      Width = 154
+      AutoSelect = False
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'Aucune pathologie'
+        'Surpoids / obésité'
+        'Pour amaigrissement rapide'
+        'Hypothyroidie / Cushing'
+        'Ostéosarcome'
+      )
+      TabOrder = 1
+      Text = 'Aucune pathologie'
+    end
+    object Label7: TLabel
+      Left = 0
+      Height = 32
+      Top = 0
+      Width = 192
+      Align = alTop
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Chien'
+      Font.Height = -20
+      Font.Style = [fsBold]
+      Layout = tlCenter
+      ParentColor = False
+      ParentFont = False
+    end
+    object Label8: TLabel
+      Left = 16
+      Height = 15
+      Top = 40
+      Width = 31
+      Caption = 'Race :'
+      ParentColor = False
+    end
+    object Label9: TLabel
+      Left = 16
+      Height = 15
+      Top = 91
+      Width = 63
+      Caption = 'Pathologie :'
+      ParentColor = False
+    end
+    object chienphysiologie: TComboBox
+      Left = 16
+      Height = 23
+      Top = 155
+      Width = 154
+      AutoSelect = False
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'Adulte entier'
+        'Stérilisé'
+        '5ème à 9ème semaine de gestation'
+        'Lactation'
+        'Début de croissance'
+        'Milieu de croissance'
+        'Fin de croissance'
+      )
+      OnChange = chienphysiologieChange
+      TabOrder = 2
+      Text = 'Adulte entier'
+    end
+    object chienactivite: TComboBox
+      Left = 16
+      Height = 23
+      Top = 203
+      Width = 154
+      AutoSelect = False
+      ItemHeight = 15
+      ItemIndex = 1
+      Items.Strings = (
+        'Sédentaire / Calme'
+        'Normal (jardin)'
+        'Hyperactif / Travail'
+      )
+      OnChange = chienphysiologieChange
+      TabOrder = 3
+      Text = 'Normal (jardin)'
+    end
+    object Label10: TLabel
+      Left = 16
+      Height = 15
+      Top = 139
+      Width = 67
+      Caption = 'Physiologie :'
+      ParentColor = False
+    end
+    object Label11: TLabel
+      Left = 16
+      Height = 15
+      Top = 187
+      Width = 46
+      Caption = 'Activité :'
+      ParentColor = False
+    end
+    object chienrpc: TComboBox
+      Left = 16
+      Height = 23
+      Top = 254
+      Width = 154
+      AutoSelect = False
+      Enabled = False
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'Petite race'
+        'Race moyenne'
+        'Grande race'
+        'Petite race (croissance)'
+        'Race moyenne (croissance)'
+        'Grande race (croissance)'
+        'Gestation'
+        'Lactation'
+        'Chien agé'
+        'Pathologie : IRC (débutante)'
+        'Pathologie : IRC (avancée)'
+        'Pathologie : Obésité'
+        'Pathologie : Anémie'
+        'Pathologie : Insuffisance hépatique'
+        'Pathologie : Pancréatite'
+        'Pathologie : IPE / Diarrhée'
+      )
+      OnChange = chienphysiologieChange
+      TabOrder = 4
+      Text = 'Petite race'
+    end
+    object Label3: TLabel
+      Left = 15
+      Height = 15
+      Top = 237
+      Width = 173
+      Caption = 'Calcul du RPC (ration ménagère)'
+      ParentColor = False
+    end
+  end
+  object panelchat2: TPanel
+    Left = 32
+    Height = 120
+    Top = 48
+    Width = 408
+    BevelOuter = bvNone
+    ClientHeight = 120
+    ClientWidth = 408
+    ParentColor = False
+    TabOrder = 0
+    object LabeledEdit1: TLabeledEdit
+      Left = 8
+      Height = 23
+      Top = 25
+      Width = 184
+      EditLabel.AnchorSideLeft.Control = LabeledEdit1
+      EditLabel.AnchorSideRight.Control = LabeledEdit1
+      EditLabel.AnchorSideRight.Side = asrBottom
+      EditLabel.AnchorSideBottom.Control = LabeledEdit1
+      EditLabel.Left = 8
+      EditLabel.Height = 15
+      EditLabel.Top = 7
+      EditLabel.Width = 184
+      EditLabel.Caption = 'Nom du propriétaire'
+      EditLabel.ParentColor = False
+      TabOrder = 0
+    end
+    object LabeledEdit2: TLabeledEdit
+      Left = 8
+      Height = 23
+      Top = 80
+      Width = 184
+      EditLabel.AnchorSideLeft.Control = LabeledEdit2
+      EditLabel.AnchorSideRight.Control = LabeledEdit2
+      EditLabel.AnchorSideRight.Side = asrBottom
+      EditLabel.AnchorSideBottom.Control = LabeledEdit2
+      EditLabel.Left = 8
+      EditLabel.Height = 15
+      EditLabel.Top = 62
+      EditLabel.Width = 184
+      EditLabel.Caption = 'Nom de l''animal'
+      EditLabel.ParentColor = False
+      TabOrder = 1
+    end
+    object FloatSpinEdit1: TFloatSpinEdit
+      Left = 224
+      Height = 23
+      Top = 25
+      Width = 104
+      Increment = 1
+      MaxValue = 100
+      MinValue = 0
+      TabOrder = 2
+      Value = 0
+    end
+    object Label6: TLabel
+      Left = 224
+      Height = 15
+      Top = 8
+      Width = 73
+      Caption = 'Poids optimal'
+      ParentColor = False
+    end
+    object radiochien: TRadioButton
+      Left = 223
+      Height = 19
+      Top = 56
+      Width = 51
+      Caption = 'Chien'
+      Checked = True
+      OnChange = radiochienChange
+      TabOrder = 4
+      TabStop = True
+    end
+    object radiochat: TRadioButton
+      Left = 296
+      Height = 19
+      Top = 56
+      Width = 45
+      Caption = 'Chat'
+      OnChange = radiochienChange
+      TabOrder = 3
+    end
+    object CheckBox1: TCheckBox
+      Left = 223
+      Height = 19
+      Top = 84
+      Width = 118
+      Caption = 'Ration ménagère ?'
+      OnChange = CheckBox1Change
+      TabOrder = 5
+    end
+  end
+  object panelchat1: TPanel
+    Left = 8
+    Height = 572
+    Top = 12
+    Width = 16
+    BevelOuter = bvNone
+    Color = 3185402
+    ParentColor = False
+    TabOrder = 1
+  end
+  object panelchat3: TPanel
+    Left = 32
+    Height = 110
+    Top = 474
+    Width = 624
+    BevelOuter = bvNone
+    ClientHeight = 110
+    ClientWidth = 624
+    ParentColor = False
+    TabOrder = 4
+    object Edit1: TEdit
+      Left = 152
+      Height = 23
+      Top = 53
+      Width = 104
+      TabOrder = 0
+    end
+    object Label2: TLabel
+      Left = 8
+      Height = 15
+      Top = 54
+      Width = 139
+      Caption = 'Besoin Energétique (kcal) :'
+      ParentColor = False
+    end
+    object Label4: TLabel
+      Left = 8
+      Height = 15
+      Top = 86
+      Width = 139
+      Caption = 'Quantité d''aliment en g/j :'
+      ParentColor = False
+    end
+    object Edit2: TEdit
+      Left = 152
+      Height = 23
+      Top = 80
+      Width = 104
+      TabOrder = 1
+    end
+    object Button2: TButton
+      Left = 430
+      Height = 24
+      Top = 79
+      Width = 192
+      Caption = 'Rapport / Impression'
+      OnClick = Button2Click
+      TabOrder = 2
+    end
+    object CheckBox2: TCheckBox
+      Left = 7
+      Height = 19
+      Top = 14
+      Width = 275
+      Caption = 'Calcul Methode Atwater ? (par défaut NRC 2006)'
+      TabOrder = 3
+    end
+    object Button3: TButton
+      Left = 430
+      Height = 72
+      Top = 6
+      Width = 192
+      Caption = 'Calculer'
+      OnClick = Button3Click
+      TabOrder = 4
+    end
+  end
+  object Label5: TLabel
+    Left = 33
+    Height = 28
+    Top = 10
+    Width = 122
+    Caption = 'Informations'
+    Font.Height = -20
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object Image1: TImage
+    Left = 624
+    Height = 37
+    Top = 8
+    Width = 36
+    AutoSize = True
+    Picture.Data = {
+      1754506F727461626C654E6574776F726B477261706869630305000089504E47
+      0D0A1A0A0000000D49484452000000240000002508060000002A5C4B3D000000
+      206348524D00007A25000080830000F9FF000080E9000075300000EA6000003A
+      980000176F925FC5460000049E494441545847ED966B4C935718C715C912B399
+      91ECCB3E986D31CB962CBB649919C99299EC429640968C10A76E768BBBA059D8
+      40441992CD7119730E8472D1296D919B5114190581968BDC6AA98A2882804E01
+      A1B414CA6D14D9B8FC765A465D93256DA91FC8C2499EBCE939CFF33EBFFE9FF3
+      3EE7AC468C55CB69588196D358B59C606CD55A0172A2C0FF5B218542E1F10E78
+      A80A5D6B69B1B6108A8B8B970CE631D088659EDEA1497A4DE336082B90D5FCFC
+      FC9604B524A0B1A959CEA975046CDD4156E16FDC9B822E33242BB2ED4056A8B8
+      D818B7A1DC06BAD6334A63D738BD93B06D47B01DA0A57B84903D510E406FBEE5
+      BE4A6E01693A8668EEB1D02A24B93B065F84ECB103BCFC9A2FD7EF191D80228E
+      37222B6986598BCB4AB90CA4ED1CE2B680E830CDD0DA3F85691EA21392EC0001
+      811F611469CFD5B6111927A5427717DD08C4978F9175AAF4E1024DDFBF4F49DB
+      34A1DFC6D800BCBDD7F0B6FF07887C6CFF723792E0709ABAA7A9BB398EB67B86
+      DE3948529CE685577C89923510576A465BA77209CA2585B22FF4A0FB7D1CBD78
+      E5FAA737D8556916139785E97AE7A96A1FA7B26D0C55AB9927D73FE550BABC0E
+      3890764A440B52CF3BF52C6139B7B874C782B60F52728B6DC9363CFF22DA7B50
+      7A75D866CAE6613462FDB997363AC0587D735B45794FB6D37AA9D6198FF3C375
+      6CC4CCDE023DF9173A894E3E81B26594ECCA2E4AAF4F5074C5CC599D8933BA21
+      0AB48354DC824DFE5B1C80D63EBA8EDC1B70A8CA822C23D973A0F66E1391B96D
+      AC5DE7634FD43808272F9AC8D718C96B1824B7C1484E8381822B1624BBE31D80
+      DEF0DF4EE6C53F49AA9E202EE167CF815A3A7A48281B22B9BCDF9EA848FC6379
+      AD11799D0179CD80300399357A4E6826D81616E700B45F564F5A9588AFFE83A8
+      EF633D07EAE8BAC381223D47EB2789C8501193D74C5E0BA4ABFB39A2D6935129
+      4C3CD3D50364364CB035F481425EDEDEE45F175F5C593F29F57F11B977B7E740
+      23FADB449DD59374BE8F8C6A33C744D28DEF0491770D522BFA6D200BA647AE99
+      2470E701BB429BBF8AE7B8C6C2E1723D87D4E31CFC2EDC732098213657476299
+      1E69A5896879832DA1645F2A72ED1452959E3401942A9E39CD73BCBAE97D3B90
+      BC699A14D50087D58384251552AD72DE205DEA4345252A7E3C6F2651A874BAF3
+      C1899E2D00166152845AC5BD0FD6FC2511C87462338B9834CD2C12C9274C59C4
+      01E8791F02CBA881E8CC5A122B06F9B5718AF73E0EB7A9F0FABB41E45C15BDA9
+      5C24551B483EDF6D574726D4B1964A5A3346E82F67901D4971C6B2707D71C94B
+      38D5AA9444E7B773586522476CD4C57B8F5494244D94324FCCF9FA05D9E63787
+      FCC431CD7D52AA468839D54EF0A71F3237E7BC4BBB056475CE3F719C28C5658E
+      36C1E6D083B6E48F3DFE04276FC2FECC1ADB6F2FAF356489035E5A3B49749616
+      C996408C46EBB1EBDA7059A1C5D79516E61316938EC2AA92D7230B4AAD5EB825
+      5AED6BA98AE4AA513E0B8B253CE4738687875D23F9C7CB6D206B9CA1AF870C69
+      22BB42F73934C1F5CF3C4BC40F497CB36B07AAB212B740169D9704F4EF4C4AA5
+      121F1F1F020202B871A395FE3EF1A979303C06F220F77F86AE0039537445A115
+      859C29E06C7DD9EDA1BF0132926322FDA091910000000049454E44AE426082
+    }
+  end
+  object Label1: TLabel
+    Left = 512
+    Height = 15
+    Top = 18
+    Width = 113
+    Caption = 'Jabouley Florent 2014'
+    ParentColor = False
+  end
+  object frReport1: TfrReport
+    InitialZoom = pzDefault
+    Options = []
+    PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
+    DataType = dtDataSet
+    OnGetValue = frReport1GetValue
+    left = 456
+    top = 88
+  end
+end
