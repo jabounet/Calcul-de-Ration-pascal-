@@ -326,6 +326,7 @@ begin
         i := sg.Rowcount;
         sg.RowCount := i + 1;
 
+
         // récupération données
         sg.cells[0, i] := FieldByName('IDCLIENT').AsString;
         sg.cells[1, i] := FieldByName('IDANIMAL').AsString;

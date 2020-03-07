@@ -465,7 +465,7 @@ end;
 
 
 
-function getbe(poids: double): double;
+{function getbe(poids: double): double;
 var
   be: double;
 begin
@@ -569,7 +569,7 @@ begin
     Result := be;
 
   end;
-end;
+end;  }
 
 
 procedure connect_db;
