@@ -124,6 +124,16 @@ type
   recherches = set of typerecherche;
 
 type
+  rec_recherche = packed record
+    client_nom, client_prenom, client_id,
+    animal_id, animal_nom, animal_espece, animal_sexe, animal_race,
+    animal_naissance: string;
+  end;
+
+type
+  resultat_recherche = array of rec_recherche;
+
+type
   aliment = packed record
     nom: string;
     Source: string;
@@ -236,7 +246,7 @@ begin
 end;
 
 
-function TFieldHelper.AsSQLiteDate: tdatetime;
+function ConvertSQLiteStringToDateTime(dstr: string): TdateTime;
 var
   FS: TFormatSettings;
 begin
@@ -244,7 +254,12 @@ begin
   FS.DateSeparator := '-';
   FS.ShortDateFormat := 'yyyy-mm-dd';
   FS.ShortTimeFormat := 'hh:mm:ss.zzz';
-  Result := StrToDateTime((self.AsString), FS);
+  Result := StrToDateTime(dstr, FS);
+end;
+
+function TFieldHelper.AsSQLiteDate: tdatetime;
+begin
+  Result := ConvertSQLiteStringToDateTime(self.AsString);
 end;
 
 type
@@ -292,18 +307,15 @@ begin
 
 end;
 
-procedure Recherche(nclient, nanimal: string; ntype: recherches; var sg: TstringGrid);
+
+function Recherche(nclient, nanimal: string; ntype: recherches): resultat_recherche;
 var
   jquery: TZquery;
 var
   i: integer;
-var
-  d: TdateTime;
-var
-  naiss: string;
 begin
 
-  sg.RowCount := 1;
+  setlength(Result, 0);
   jquery := TZquery.Create(nil);
   try
     connect_db;
@@ -311,8 +323,8 @@ begin
     begin
       Connection := Form1.Zconnect1;
       SQL.Clear;
-      // Recherche hors index
-      SQL.Add('SELECT A.ID AS IDCLIENT,B.ID AS IDANIMAL, A.NOM AS NOMC, B.NOM AS NOMA, B.NAISSANCE AS NAISS,');
+      SQL.Add(
+        'SELECT A.ID AS IDCLIENT,B.ID AS IDANIMAL, A.NOM AS NOMC, B.NOM AS NOMA, B.NAISSANCE AS NAISS,');
       SQL.Add('B.ESPECE, B.RACE, B.SEXE');
       SQL.Add('FROM CLIENTS A, ANIMAUX B');
       SQL.Add('WHERE (UPPER(A.NOM) LIKE :NCLIENT) AND (UPPER(B.NOM) LIKE :NANIMAL)');
@@ -323,26 +335,19 @@ begin
 
       while not EOF do
       begin
-        i := sg.Rowcount;
-        sg.RowCount := i + 1;
+        i := length(Result);
+        setlength(Result, length(Result) + 1);
 
-
-        // récupération données
-        sg.cells[0, i] := FieldByName('IDCLIENT').AsString;
-        sg.cells[1, i] := FieldByName('IDANIMAL').AsString;
-        sg.cells[2, i] := FieldByName('NOMC').AsString;
-        sg.cells[3, i] := FieldByName('NOMA').AsString;
-        sg.cells[4, i] := FieldByName('ESPECE').AsString;
-        sg.cells[5, i] := FieldByName('RACE').AsString;
-
-        // conversion age
-        naiss := 'inconnu';
-        if FieldByName('NAISS').AsString <> '' then
+        with Result[i] do
         begin
-          d := FieldByName('NAISS').AsSQLiteDate;
-          naiss := format_age(d, [fa_year, fa_month, fa_day]);
+          client_id := FieldByName('IDCLIENT').AsString;
+          animal_id := FieldByName('IDANIMAL').AsString;
+          client_nom := FieldByName('NOMC').AsString;
+          animal_nom := FieldByName('NOMA').AsString;
+          animal_espece := FieldByName('ESPECE').AsString;
+          animal_race := FieldByName('RACE').AsString;
+          animal_naissance := FieldByName('NAISS').AsString;
         end;
-        sg.cells[6, i] := naiss;
 
         Next;
       end;
@@ -357,6 +362,40 @@ begin
 end;
 
 
+procedure Resultats_ToStringGrid(a: resultat_recherche; var sg : TStringGrid);
+var
+  i, j: integer;
+var
+  naiss: string;
+var
+  d: TdateTime;
+begin
+
+  sg.RowCount := 1;
+  if length(a) = 0 then
+    exit;
+  for i := 0 to length(a) - 1 do
+  begin
+    j := sg.RowCount;
+    sg.RowCount := sg.RowCount + 1;
+    with a[i] do
+    begin
+      sg.cells[0, j] := client_id;
+      sg.cells[1, j] := animal_id;
+      sg.cells[2, j] := client_nom;
+      sg.cells[3, j] := animal_nom;
+      sg.cells[4, j] := animal_espece;
+      sg.cells[5, j] := animal_race;
+      naiss := 'inconnu';
+      if animal_naissance <> '' then
+      begin
+        d := ConvertSQLiteStringToDateTime(animal_naissance);
+        naiss := format_age(d, [fa_year, fa_month, fa_day]);
+      end;
+      sg.cells[6, j] := naiss;
+    end;
+  end;
+end;
 
 function Calcul_Besoins_Energetiques(esp: espece_animal; poids: double;
   krace, kactivite, kpatho, kphysio: integer): double;
@@ -444,26 +483,6 @@ begin
   end;
   Result := be;
 end;
-
-
-procedure clearst(var arst: array of string);
-var
-  i: integer;
-begin
-  for i := 1 to length(arst) - 1 do
-    arst[i] := '';
-end;
-
-function cvpv(texte: string): string;
-var
-  i: integer;
-begin
-  for i := 1 to length(texte) - 1 do
-    if texte[i] = '.' then
-      texte[i] := ',';
-  Result := texte;
-end;
-
 
 
 {function getbe(poids: double): double;
@@ -617,7 +636,7 @@ end;
 
 procedure TForm1.Button4Click(Sender: TObject);
 begin
-  recherche(edit3.Text, edit4.Text, [], sgrecherche);
+  Resultats_ToStringGrid(recherche(edit3.Text, edit4.Text, []),sgrecherche);
 end;
 
 procedure TForm1.chatphysiologieClick(Sender: TObject);

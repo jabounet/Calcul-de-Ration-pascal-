@@ -510,7 +510,7 @@ object Form1: TForm1
       object Button4: TButton
         Left = 416
         Height = 25
-        Top = 44
+        Top = 40
         Width = 75
         Caption = 'Rechercher'
         OnClick = Button4Click
